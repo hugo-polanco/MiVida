@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Amor & Amistad Nayeli 💞</title>
   <style>
     :root{
@@ -16,17 +16,34 @@
       --accent2:#ffb3c7;
     }
     *{box-sizing:border-box}
+
+    html, body { height: 100%; }
+
     body{
       margin:0;
-      min-height:100vh;
+      /* iPhone/Safari: altura estable */
+      min-height: 100svh;
+      min-height: 100dvh;
+
       display:grid;
       place-items:center;
+
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: radial-gradient(900px 600px at 20% 10%, rgba(255,77,125,.16), transparent 60%),
                   radial-gradient(900px 600px at 80% 90%, rgba(255,179,199,.12), transparent 60%),
                   linear-gradient(135deg, var(--bg1), var(--bg2));
       color:var(--text);
-      overflow:hidden;
+
+      /* En móvil, mejor permitir scroll vertical si hace falta */
+      overflow-x:hidden;
+      overflow-y:auto;
+
+      /* notch / safe areas */
+      padding:
+        calc(env(safe-area-inset-top) + 16px)
+        calc(env(safe-area-inset-right) + 16px)
+        calc(env(safe-area-inset-bottom) + 16px)
+        calc(env(safe-area-inset-left) + 16px);
     }
 
     /* brillo suave */
@@ -86,11 +103,15 @@
     /* tarjeta */
     .card{
       width:min(900px, 92vw);
-      padding: clamp(22px, 3.6vw, 44px);
+      padding: clamp(20px, 3.6vw, 44px);
       border-radius: 26px;
       background: var(--card);
       border: 1px solid var(--border);
+
+      /* iPhone: blur pesado puede verse raro/lag; lo ajustamos en móviles abajo */
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+
       box-shadow: 0 30px 80px rgba(0,0,0,.45);
       position:relative;
       overflow:hidden;
@@ -122,12 +143,7 @@
       to{ transform: rotate(360deg); }
     }
 
-    /* contenido encima del borde */
-    .content{
-      position:relative;
-      z-index:1;
-      text-align:center;
-    }
+    .content{ position:relative; z-index:1; text-align:center; }
 
     .tag{
       display:inline-flex;
@@ -150,7 +166,7 @@
 
     h1{
       margin: 0 0 10px;
-      font-size: clamp(30px, 4.6vw, 54px);
+      font-size: clamp(28px, 6.2vw, 54px);
       letter-spacing:-.03em;
       line-height:1.05;
     }
@@ -158,7 +174,7 @@
     .subtitle{
       margin: 0 auto 18px;
       max-width: 62ch;
-      font-size: clamp(14px, 2.2vw, 18px);
+      font-size: clamp(14px, 3.6vw, 18px);
       color: var(--muted);
       line-height:1.7;
     }
@@ -210,7 +226,6 @@
       to{ transform: scale(1.35); opacity:0; }
     }
 
-    /* mensaje con efecto máquina de escribir */
     .letter{
       margin: 12px auto 0;
       max-width: 66ch;
@@ -222,7 +237,7 @@
     }
     .letter p{
       margin:0;
-      font-size: clamp(15px, 2.2vw, 18px);
+      font-size: clamp(15px, 3.8vw, 18px);
       line-height:1.8;
       color: rgba(255,255,255,.86);
       white-space: pre-wrap;
@@ -231,9 +246,7 @@
       border-right: 2px solid rgba(255,179,199,.9);
       animation: caret 0.8s steps(1) infinite;
     }
-    @keyframes caret{
-      50%{ border-right-color: transparent; }
-    }
+    @keyframes caret{ 50%{ border-right-color: transparent; } }
 
     .signature{
       margin-top: 14px;
@@ -241,12 +254,37 @@
       font-size: 13px;
       color: rgba(255,255,255,.62);
     }
-
-    /* pequeña nota inferior */
     .note{
       margin-top: 10px;
       font-size: 12px;
       color: rgba(255,255,255,.55);
+    }
+
+    /* ✅ Ajustes específicos para móviles */
+    @media (max-width: 520px){
+      body{
+        place-items:start center;
+      }
+      .card{
+        width: 100%;
+        border-radius: 22px;
+        padding: 18px;
+        /* más ligero en iPhone */
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .card::before{ opacity:.55; filter: blur(12px); }
+      .big-heart{ width: 92px; height: 92px; border-radius: 14px; }
+      .big-heart::before,.big-heart::after{ width:92px; height:92px; }
+      .big-heart::before{ left:-46px; }
+      .big-heart::after{ top:-46px; }
+      .ring{ width: 125px; height: 125px; }
+      .letter{ padding: 16px; }
+    }
+
+    /* accesibilidad: si alguien tiene "reducir movimiento" */
+    @media (prefers-reduced-motion: reduce){
+      *{ animation: none !important; transition: none !important; }
     }
   </style>
 </head>
@@ -282,7 +320,7 @@
       </div>
 
       <div class="note">
-        N A Y E L I 
+        N A Y E L I
       </div>
     </div>
   </section>
@@ -317,21 +355,17 @@
     }
     setInterval(spawnHeart, 240);
 
-    // ✍️ Efecto máquina de escribir (mensaje Amor y Amistad + reconciliación)
+    // ✍️ Efecto máquina de escribir
     const message =
 `Hoy, en Amor y Amistad, quería decirte algo sin prisa…
-
 Ha pasado más de un mes sin verte, y te juro que te he sentido en todo:
 en canciones, en recuerdos, en momentos que deberían ser normales… pero no lo son sin ti.
-
 También quiero ser honesto: si algo se rompió, yo no quiero quedarme con eso.
 Quiero que recuperes, que nos encontremos de nuevo, que volvamos a hablarnos bonito,
 y que sea más fuerte que cualquier malentendido.
-
 Te extraño con ganas… con ganas reales de verte, de saber cómo estás,
 de mirarte a los ojos y decirte: “aquí estoy, y me importas”.
-
-Si me das la oportunidad, yo pongo el corazón… y las ganas de hacerlo bien. 💗`;
+yo pongo el todo… y las ganas de hacerlo bien.💗`;
 
     const target = document.getElementById("typed");
     let i = 0;
@@ -340,9 +374,9 @@ Si me das la oportunidad, yo pongo el corazón… y las ganas de hacerlo bien. �
       target.textContent = message.slice(0, i);
       i++;
       if(i <= message.length){
-        setTimeout(typeNext, 22); // velocidad
+        setTimeout(typeNext, 22);
       }else{
-        target.classList.remove("type"); // quita el cursor al terminar
+        target.classList.remove("type");
       }
     }
     typeNext();
